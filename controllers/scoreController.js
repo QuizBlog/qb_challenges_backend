@@ -39,7 +39,9 @@ const getScore = async (req, res) => {
 const createScore = async (req, res) => {
     const score = new Score({
         title: req.body.title,
-        createdBy: req.body.createdBy
+        category: req.body.category,
+        questions: req.body.questions,
+        savedBy: req.body.savedBy
     });
 
     try {

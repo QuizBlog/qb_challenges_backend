@@ -36,9 +36,12 @@ const getQuiz = async (req, res) => {
 // @desc    Create a quiz
 // @access  Public
 const createQuiz = async (req, res) => {
+    
     const quiz = new Category({
         title: req.body.title,
-        createdBy: req.body.createdBy
+        category: req.body.category,
+        questions: req.body.questions,
+        takenBy: req.body.takenBy
     });
 
     try {
