@@ -3,15 +3,21 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-const PORT = process.env.PORT || 5000;
+require('dotenv').config();
 
-app.use(cors());
+const PORT = process.env.PORT || 5000;
 
 // Bodyparser Middleware
 app.use(express.json());
+app.use(cors());
 
 // DB Config
-const db = require('./config/keys').mongoURI
+const db = process.env.MONGO_URI;
+
+// Routes
+const categoriesRoutes = require('./routes/categoriesRoutes');
+const quizzesRoutes = require('./routes/quizzesRoutes');
+const scoresRoutes = require('./routes/scoresRoutes');
 
 // Connect to Mongo
 mongoose
@@ -19,7 +25,14 @@ mongoose
   .then(() => console.log('MongoDB Connected...'))
   .catch(err => console.log(err));
 
-// Use Routes
-// app.use('/api/items', require('./routes/api/items'));
+// Routes
+app.use('/api/categories', categoriesRoutes);
+app.use('/api/quizzes', quizzesRoutes);
+app.use('/api/scores', scoresRoutes);
+
+// Home route
+app.get('/', async (req, res) => {
+  res.send('Welcome to the qb challenges api!');
+});
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
