@@ -4,7 +4,7 @@ const slugify = require("slugify")
 const Schema = mongoose.Schema
 
 //create a schema object
-const QuizSchema = new Schema({
+const cQuizSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -12,8 +12,12 @@ const QuizSchema = new Schema({
   },
   category: {
     type: Schema.Types.ObjectId,
-    ref: 'category',
+    ref: 'CCategory',
     unique: true
+  },
+  isActivated: {
+    type: Boolean,
+    default: false
   },
   slug: {
     type: String,
@@ -46,20 +50,20 @@ const QuizSchema = new Schema({
       ],
     }
   ],
-  takenBy: {
+  creator: {
     type: String,
     required: true
   }
 }, { timestamps: true })
 
-QuizSchema.pre("validate", function (next) {
-  const quiz = this
+cQuizSchema.pre("validate", function (next) {
+  const cQuiz = this
 
-  if (quiz.title) {
-    quiz.slug = slugify(`${quiz.title}`, { replacement: '-', lower: true, strict: true })
+  if (cQuiz.title) {
+    cQuiz.slug = slugify(`${cQuiz.title}`, { replacement: '-', lower: true, strict: true })
   }
   next()
 })
 
 //Quiz: the name of this model
-module.exports = Quiz = mongoose.model('quiz', QuizSchema)
+module.exports = CQuiz = mongoose.model('CQuiz', cQuizSchema)

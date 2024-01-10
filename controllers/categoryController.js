@@ -1,9 +1,9 @@
 require('dotenv').config();
 
 // MODEL
-const Category = require('../models/Category');
+const Category = require('../models/CCategory');
 
-// @route   GET api/category
+// @route   GET api/categories
 // @desc    Get all categories
 // @access  Public
 const getAllCategories = async (req, res) => {
@@ -18,7 +18,7 @@ const getAllCategories = async (req, res) => {
     }
 }
 
-// @route   GET api/category/:id
+// @route   GET api/categories/:id
 // @desc    Get a category
 // @access  Public
 const getCategory = async (req, res) => {
@@ -33,13 +33,13 @@ const getCategory = async (req, res) => {
     }
 }
 
-// @route   POST api/category
+// @route   POST api/categories
 // @desc    Create a category
 // @access  Public
 const createCategory = async (req, res) => {
     const category = new Category({
         title: req.body.title,
-        createdBy: req.body.createdBy
+        creator: req.body.creator
     });
 
     try {
@@ -53,14 +53,17 @@ const createCategory = async (req, res) => {
     }
 }
 
-// @route   PATCH api/category/:id
+// @route   PATCH api/categories/:id
 // @desc    Update a category
 // @access  Public
 const updateCategory = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
+
+        if (!category) res.status(404).json({ message: 'Category not found' });
+
         category.title = req.body.title;
-        category.createdBy = req.body.createdBy;
+        category.creator = req.body.creator;
         const updatedCategory = await category.save();
 
         if (!updatedCategory) res.status(400).json({ message: 'Category can not be updated!' });
@@ -71,15 +74,14 @@ const updateCategory = async (req, res) => {
     }
 }
 
-// @route   DELETE api/category/:id
+// @route   DELETE api/categories/:id
 // @desc    Delete a category
 // @access  Public
 const deleteCategory = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
-        await category.remove();
-
         if (!category) res.status(404).json({ message: 'Category not found' });
+        await category.remove();
 
         res.json({ message: 'Category deleted' });
     } catch (err) {

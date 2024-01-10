@@ -18,6 +18,8 @@ const db = process.env.MONGO_URI;
 const categoriesRoutes = require('./routes/categoriesRoutes');
 const quizzesRoutes = require('./routes/quizzesRoutes');
 const scoresRoutes = require('./routes/scoresRoutes');
+const verificationsRoutes = require('./routes/verificationsRoutes');
+const agreementsRoutes = require('./routes/agreementsRoutes');
 
 // Connect to Mongo
 mongoose
@@ -29,6 +31,8 @@ mongoose
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/quizzes', quizzesRoutes);
 app.use('/api/scores', scoresRoutes);
+app.use('/api/verifications', verificationsRoutes);
+app.use('/api/agreements', agreementsRoutes);
 
 // Home route
 app.get('/', async (req, res) => {

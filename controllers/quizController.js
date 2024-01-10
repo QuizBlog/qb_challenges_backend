@@ -1,6 +1,6 @@
 require('dotenv').config();
 // MODEL
-const Quiz = require('../models/Quiz');
+const Quiz = require('../models/CQuiz');
 
 // @route   GET api/quizzes
 // @desc    Get all quizzes
@@ -24,7 +24,7 @@ const getQuiz = async (req, res) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
 
-        if (!quiz) res.status(404).json({ message: 'Quiz can not be retrieved!' });
+        if (!quiz) res.status(404).json({ message: 'Challenge can not be retrieved!' });
 
         res.json(quiz);
     } catch (err) {
@@ -36,18 +36,18 @@ const getQuiz = async (req, res) => {
 // @desc    Create a quiz
 // @access  Public
 const createQuiz = async (req, res) => {
-    
-    const quiz = new Category({
+    const quiz = new Quiz({
         title: req.body.title,
         category: req.body.category,
+        isActivated: req.body.isActivated,
         questions: req.body.questions,
-        takenBy: req.body.takenBy
+        creator: req.body.creator
     });
 
     try {
         const newQuiz = await quiz.save();
 
-        if (!newQuiz) res.status(400).json({ message: 'Quiz can not be created!' });
+        if (!newQuiz) res.status(400).json({ message: 'Challenge can not be created!' });
 
         res.status(200).json(newQuiz);
     } catch (err) {
@@ -62,10 +62,13 @@ const updateQuiz = async (req, res) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
         quiz.title = req.body.title;
-        quiz.createdBy = req.body.createdBy;
+        quiz.category = req.body.category;
+        quiz.isActivated = req.body.isActivated;
+        quiz.questions = req.body.questions;
+        quiz.creator = req.body.creator;
         const updatedQuiz = await quiz.save();
 
-        if (!updatedQuiz) res.status(400).json({ message: 'Quiz can not be updated!' });
+        if (!updatedQuiz) res.status(400).json({ message: 'Challenge can not be updated!' });
 
         res.json(updatedQuiz);
     } catch (err) {
@@ -79,9 +82,8 @@ const updateQuiz = async (req, res) => {
 const deleteQuiz = async (req, res) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
-        await quiz.remove();
-
         if (!quiz) res.status(404).json({ message: 'Quiz not found' });
+        await quiz.remove();
 
         res.json({ message: 'Quiz deleted' });
     } catch (err) {

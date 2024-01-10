@@ -1,9 +1,9 @@
 require('dotenv').config();
 
 // MODEL
-const Score = require('../models/Score');
+const Score = require('../models/CScore');
 
-// @route   GET api/score
+// @route   GET api/scores
 // @desc    Get all scores
 // @access  Public
 const getAllScores = async (req, res) => {
@@ -18,7 +18,7 @@ const getAllScores = async (req, res) => {
     }
 }
 
-// @route   GET api/score/:id
+// @route   GET api/scores/:id
 // @desc    Get a score
 // @access  Public
 const getScore = async (req, res) => {
@@ -33,15 +33,17 @@ const getScore = async (req, res) => {
     }
 }
 
-// @route   POST api/score
+// @route   POST api/scores
 // @desc    Create a score
 // @access  Public
 const createScore = async (req, res) => {
     const score = new Score({
-        title: req.body.title,
-        category: req.body.category,
-        questions: req.body.questions,
-        savedBy: req.body.savedBy
+        // cQuiz, user, cQuestions [cQuestionID, choosenID, correctID], marks, total
+        cQuiz: req.body.cQuiz,
+        user: req.body.user,
+        cQuestions: req.body.cQuestions,
+        marks: req.body.marks,
+        total: req.body.total
     });
 
     try {
@@ -55,14 +57,17 @@ const createScore = async (req, res) => {
     }
 }
 
-// @route   PATCH api/score/:id
+// @route   PATCH api/scores/:id
 // @desc    Update a score
 // @access  Public
 const updateScore = async (req, res) => {
     try {
         const score = await Score.findById(req.params.id);
-        score.title = req.body.title;
-        score.createdBy = req.body.createdBy;
+        score.cQuiz = req.body.cQuiz;
+        score.user = req.body.user;
+        score.cQuestions = req.body.cQuestions;
+        score.marks = req.body.marks;
+        score.total = req.body.total;
         const updatedScore = await score.save();
 
         if (!updatedScore) res.status(400).json({ message: 'Score can not be updated!' });
@@ -73,14 +78,14 @@ const updateScore = async (req, res) => {
     }
 }
 
-// @route   DELETE api/score/:id
+// @route   DELETE api/scores/:id
 // @desc    Delete a score
 // @access  Public
 const deleteScore = async (req, res) => {
     try {
         const score = await Score.findById(req.params.id);
-        await score.remove();
         if (!score) res.status(404).json({ message: 'Score not found' });
+        await score.remove();
 
         res.json({ message: 'Score deleted' });
     } catch (err) {
